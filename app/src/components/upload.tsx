@@ -1,12 +1,13 @@
 import axios from "axios";
 import classNames from "classnames";
 import { FC, useState, useEffect, ChangeEvent, FormEvent } from "react";
-import { socket } from "../socket";
+import { socket } from "../utils/socket";
 
 const extensions = [".mp4"];
 const types = "video/mp4";
 
 export const UploadVideo: FC<{ onSubmit: () => void }> = ({ onSubmit }) => {
+	const [isLoading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [file, setFile] = useState<File | null>(null);
 
@@ -15,6 +16,8 @@ export const UploadVideo: FC<{ onSubmit: () => void }> = ({ onSubmit }) => {
 	});
 
 	const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+		if (isLoading) return;
+
 		const newFile = e.target?.files?.[0];
 
 		if (!newFile) {
@@ -36,6 +39,7 @@ export const UploadVideo: FC<{ onSubmit: () => void }> = ({ onSubmit }) => {
 
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		if (isLoading) return;
 
 		if (!file) {
 			setError("No file is selected");
@@ -45,11 +49,13 @@ export const UploadVideo: FC<{ onSubmit: () => void }> = ({ onSubmit }) => {
 		try {
 			const formData = new FormData();
 			formData.append("video", file);
-			const data = await axios<string>("http://localhost:5000/new", {
+			setLoading(true);
+			const data = await axios<string>(`${process.env["REACT_APP_API"]}/new`, {
 				method: "POST",
 				data: formData,
 				headers: { "Content-Type": "multipart/form-data" },
 			});
+			setLoading(false);
 			socket.emit("join", data.data);
 			onSubmit();
 		} catch (error: any) {
@@ -58,7 +64,7 @@ export const UploadVideo: FC<{ onSubmit: () => void }> = ({ onSubmit }) => {
 		}
 	};
 
-	const canSubmit = !!file && !error;
+	const canSubmit = !!file && !error && !isLoading;
 
 	return (
 		<form
@@ -115,7 +121,7 @@ export const UploadVideo: FC<{ onSubmit: () => void }> = ({ onSubmit }) => {
 					!canSubmit ? "bg-gray-400" : "bg-green-600"
 				)}
 			>
-				Submit
+				{isLoading ? "Uploading..." : "Submit"}
 			</button>
 		</form>
 	);

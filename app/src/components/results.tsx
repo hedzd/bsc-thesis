@@ -1,23 +1,23 @@
 import { FC, useEffect, useState } from "react";
-import { socket } from "../socket";
+import { socket } from "../utils/socket";
+
+interface Result {
+	model: string;
+	result: string;
+}
 
 export const Results: FC = () => {
 	const [skeleton, setSkeleton] = useState<string | null>(null);
-	const [results, setResults] = useState<
-		{
-			model: string;
-			result: string;
-		}[]
-	>([]);
+	const [results, setResults] = useState<Result[]>([]);
 
 	useEffect(() => {
 		if (!socket.connected) socket.connect();
 
-		socket.on("skeleton", (d) => {
+		socket.on("skeleton", (d: string) => {
 			setSkeleton(d);
 		});
 
-		socket.on("result", (d) => {
+		socket.on("result", (d: Result) => {
 			setResults((r) => [...r, d]);
 		});
 	}, []);

@@ -59,14 +59,15 @@ class mediapipe_pose:
         fps = round(cap.get(cv2.CAP_PROP_FPS))
 
         out = cv2.VideoWriter(out_path, cv2.VideoWriter_fourcc(
-            'M', 'J', 'P', 'G'), fps, (frame_width, frame_height))
+            *'H264'), fps, (frame_width, frame_height))
 
         while cap.isOpened():
             ret, image = cap.read()
             if not ret:
                 break
 
-            image = cv2.cvtColor(cv2.flip(image, 1), cv2.COLOR_BGR2RGB)
+            # image = cv2.cvtColor(cv2.flip(image, 1), cv2.COLOR_BGR2RGB)
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             image.flags.writeable = False
             results = pose.process(image)
             image.flags.writeable = True
