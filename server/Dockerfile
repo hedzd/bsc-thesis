@@ -11,7 +11,7 @@ RUN apt update; apt install -y libgl1 build-essential cmake git python3-dev pyth
     libgstreamer-plugins-base1.0-dev \
     libgstreamer1.0-dev libgtk-3-dev \
     libpng-dev libjpeg-dev libopenexr-dev libtiff-dev libwebp-dev \
-    libopencv-dev x264 libx264-dev libssl-dev ffmpeg python3-opencv
+    libopencv-dev x264 libx264-dev x265 libx265-dev libssl-dev ffmpeg python3-opencv openh264
 
 # install dependencies
 RUN pip install --upgrade pip
