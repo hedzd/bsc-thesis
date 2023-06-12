@@ -59,7 +59,7 @@ class mediapipe_pose:
         fps = round(cap.get(cv2.CAP_PROP_FPS))
 
         out = cv2.VideoWriter(out_path, cv2.VideoWriter_fourcc(
-            *'H264'), fps, (frame_width, frame_height))
+            *'avc1'), fps, (frame_width, frame_height))
 
         while cap.isOpened():
             ret, image = cap.read()
