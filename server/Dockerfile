@@ -65,7 +65,7 @@ RUN cmake \
     -DBUILD_TESTS=OFF \
     -DBUILD_PERF_TESTS=OFF \
     -DCMAKE_BUILD_TYPE=RELEASE \
-    -DCMAKE_INSTALL_PREFIX=$(python${PYTHON_VERSION} -c "import sys; print(sys.prefix)") \
+    -DCMAKE_INSTALL_PREFIX:PATH=$(python${PYTHON_VERSION} -c "import sys; print(sys.prefix)") \
     -DPYTHON_EXECUTABLE=$(which python${PYTHON_VERSION}) \
     -DPYTHON_INCLUDE_DIR=$(python${PYTHON_VERSION} -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())") \
     -DPYTHON_PACKAGES_PATH=$(python${PYTHON_VERSION} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())") \
@@ -90,6 +90,7 @@ RUN apt clean && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /root/opencv-${OPENCV_VERSION}
 
+WORKDIR /usr/app
 
 # install dependencies
 RUN pip install --upgrade pip
