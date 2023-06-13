@@ -2,6 +2,8 @@ FROM jjanzic/docker-python3-opencv:latest
 
 WORKDIR /usr/app
 
+RUN apt-get update && apt-get install libgl1
+
 # install dependencies
 RUN pip install --upgrade pip
 COPY requirements.txt .
