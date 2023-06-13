@@ -1,4 +1,4 @@
-FROM jjanzic/docker-python3-opencv:ltest
+FROM jjanzic/docker-python3-opencv:latest
 
 WORKDIR /usr/app
 
