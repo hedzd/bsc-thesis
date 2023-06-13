@@ -97,8 +97,7 @@ export const UploadVideo: FC<{ onSubmit: () => void }> = ({ onSubmit }) => {
 								`${file.name}`
 							) : (
 								<>
-									<span className="font-semibold">Click to upload</span> or drag
-									and drop
+									<span className="font-semibold">Click to upload</span>
 								</>
 							)}
 						</p>
