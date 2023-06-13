@@ -3,8 +3,8 @@ FROM ubuntu:18.04
 WORKDIR /root
 
 ENV OPENCV_VERSION=4.7.0 \
-    PYTHON_VERSION=3.11 \
-    PYTHON_VERSION_SHORT=311
+    PYTHON_VERSION=3.9 \
+    PYTHON_VERSION_SHORT=39
 
 RUN apt-get update
 RUN apt-get remove -y ffmpeg x264 libx264-dev
