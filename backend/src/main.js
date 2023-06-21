@@ -26,6 +26,7 @@ const poseLogKey = "Output: ";
 app.use(cors());
 
 const s3 = new S3Client({
+	region: "default",
 	endpoint: process.env["AWS_ENDPOINT_URL"],
 	credentials: {
 		secretAccessKey: process.env["AWS_SECRET_ACCESS_KEY"],
