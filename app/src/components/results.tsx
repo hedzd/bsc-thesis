@@ -7,39 +7,37 @@ interface Result {
 }
 
 export const Results: FC = () => {
-	const [skeleton, setSkeleton] = useState<string | null>(null);
-	const [results, setResults] = useState<Result[]>([]);
+	const [pose, setPose] = useState<string | null>(null);
+	const [result, setResult] = useState<Result | null>(null);
 
 	useEffect(() => {
 		if (!socket.connected) socket.connect();
 
-		socket.on("skeleton", (d: string) => {
-			setSkeleton(d);
+		socket.on("pose", (d: string) => {
+			setPose(d);
 		});
 
 		socket.on("result", (d: Result) => {
-			setResults((r) => [...r, d]);
+			setResult(d);
 		});
 	}, []);
 
 	return (
 		<div className="flex flex-col items-center">
 			<div className="max-w-md">
-				{skeleton ? (
-					<video src={skeleton} autoPlay={true} controls={true} />
+				{pose ? (
+					<video src={pose} autoPlay={true} controls={true} />
 				) : (
 					<span>Waiting for skeleton...</span>
 				)}
 			</div>
 			<div className="flex flex-col mt-4">
-				{!!results.length ? (
+				{result ? (
 					<div className="flex flex-col">
-						{results.map((v) => (
-							<span key={v.model}>
-								{v.model} result:{" "}
-								<span className="font-bold text-lg">{v.result}</span>
-							</span>
-						))}
+						<span>
+							{result.model} result:{" "}
+							<span className="font-bold text-lg">{result.result}</span>
+						</span>
 					</div>
 				) : (
 					<span>Waiting for results...</span>

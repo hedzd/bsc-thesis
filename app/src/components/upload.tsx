@@ -12,10 +12,12 @@ const poseModels = [
 ];
 
 const actionModels = [
-	{ id: "st-gcn", title: "ST-GCN" },
-	{ id: "st-gcn-c", title: "ST-GCN (with confidence score)" },
-	{ id: "mst-gcn", title: "MST-GCN" },
-	{ id: "mst-gcn-c", title: "MST-GCN (with confidence score)" },
+	{ id: "stgcn_uniform", title: "ST-GCN Uniform" },
+	{ id: "stgcn_distance", title: "ST-GCN Distance" },
+	{ id: "stgcn_filterv", title: "ST-GCN Filter Visibility Score" },
+	{ id: "mstgcn_uniform", title: "MST-GCN Uniform" },
+	{ id: "mstgcn_spatial", title: "MST-GCN Spatial" },
+	{ id: "mstgcn_filterv", title: "MST-GCN Filter Visibility Score" },
 ];
 
 export const UploadVideo: FC<{ onSubmit: () => void }> = ({ onSubmit }) => {
@@ -74,10 +76,8 @@ export const UploadVideo: FC<{ onSubmit: () => void }> = ({ onSubmit }) => {
 				headers: { "Content-Type": "multipart/form-data" },
 			});
 			setLoading(false);
-			socket.emit("join", data.data, (p: any) => {
-				console.log({ p });
-				onSubmit();
-			});
+			socket.emit("join", data.data);
+			onSubmit();
 		} catch (error: any) {
 			setError(error?.response?.data || "Something went wrong");
 			setFile(null);
