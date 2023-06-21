@@ -3,7 +3,7 @@ module.exports = {
 		{
 			name: "app",
 			script: "./src/main.js",
-			watch: true,
+			watch: false,
 			env: {
 				NODE_ENV: "production",
 				AWS_BUCKET_NAME: "hedieh-uploads",
