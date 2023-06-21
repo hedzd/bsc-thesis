@@ -7,7 +7,7 @@ function App() {
 
 	return (
 		<div className="w-screen h-screen flex items-center justify-center">
-			<div className="flex flex-col justify-center text-center w-full">
+			<div className="flex flex-col justify-center items-center text-center w-full">
 				<h1 className="font-semibold text-lg mb-8">
 					Skeleton-based action recognition
 				</h1>

@@ -6,7 +6,23 @@ import { socket } from "../utils/socket";
 const extensions = [".mp4"];
 const types = "video/mp4";
 
+const poseModels = [
+	{ id: "openpose", title: "Lightweight OpenPose" },
+	{ id: "mediapipe", title: "MediaPipe" },
+];
+
+const actionModels = [
+	{ id: "st-gcn", title: "ST-GCN" },
+	{ id: "st-gcn-c", title: "ST-GCN (with confidence score)" },
+	{ id: "mst-gcn", title: "MST-GCN" },
+	{ id: "mst-gcn-c", title: "MST-GCN (with confidence score)" },
+];
+
 export const UploadVideo: FC<{ onSubmit: () => void }> = ({ onSubmit }) => {
+	const [formValue, setFormValue] = useState<{
+		action: string;
+		pose: string;
+	}>({ action: actionModels[0].id, pose: poseModels[0].id });
 	const [isLoading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [file, setFile] = useState<File | null>(null);
@@ -49,6 +65,8 @@ export const UploadVideo: FC<{ onSubmit: () => void }> = ({ onSubmit }) => {
 		try {
 			const formData = new FormData();
 			formData.append("video", file);
+			formData.append("pose", formValue.pose);
+			formData.append("action", formValue.action);
 			setLoading(true);
 			const data = await axios<string>(`${process.env["REACT_APP_API"]}/new`, {
 				method: "POST",
@@ -56,8 +74,10 @@ export const UploadVideo: FC<{ onSubmit: () => void }> = ({ onSubmit }) => {
 				headers: { "Content-Type": "multipart/form-data" },
 			});
 			setLoading(false);
-			socket.emit("join", data.data);
-			onSubmit();
+			socket.emit("join", data.data, (p: any) => {
+				console.log({ p });
+				onSubmit();
+			});
 		} catch (error: any) {
 			setError(error?.response?.data || "Something went wrong");
 			setFile(null);
@@ -68,10 +88,10 @@ export const UploadVideo: FC<{ onSubmit: () => void }> = ({ onSubmit }) => {
 
 	return (
 		<form
-			className="flex flex-col w-full justify-center items-center"
+			className="flex flex-col w-full justify-center items-center max-w-md"
 			onSubmit={handleSubmit}
 		>
-			<div className="flex items-center justify-center w-full max-w-md">
+			<div className="flex items-center justify-center w-full">
 				<label
 					htmlFor="dropzone-file"
 					className="flex flex-col items-center justify-center w-full h-64 border-2 rounded-lg cursor-pointer bg-gray-200 border-gray-200 hover:border-gray-300 hover:bg-gray-300"
@@ -101,7 +121,7 @@ export const UploadVideo: FC<{ onSubmit: () => void }> = ({ onSubmit }) => {
 								</>
 							)}
 						</p>
-						<p className="text-xs text-black">Supported: MP4</p>
+						<p className="text-xs text-black">Supported: {extensions}</p>
 					</div>
 					<input
 						id="dropzone-file"
@@ -110,6 +130,64 @@ export const UploadVideo: FC<{ onSubmit: () => void }> = ({ onSubmit }) => {
 						onChange={handleFileChange}
 					/>
 				</label>
+			</div>
+			<div className="text-left w-full mt-4">
+				<label className="text-base font-medium text-gray-900">
+					Pose estimation method
+				</label>
+				<fieldset className="mt-4">
+					<div className="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
+						{poseModels.map((method) => (
+							<div key={method.id} className="flex items-center">
+								<input
+									id={method.id}
+									name="pose"
+									type="radio"
+									checked={method.id === formValue.pose}
+									className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
+									onChange={() =>
+										setFormValue((v) => ({ ...v, pose: method.id }))
+									}
+								/>
+								<label
+									htmlFor={method.id}
+									className="ml-3 block text-sm font-medium text-gray-700"
+								>
+									{method.title}
+								</label>
+							</div>
+						))}
+					</div>
+				</fieldset>
+			</div>
+			<div className="text-left w-full mt-4">
+				<label className="text-base font-medium text-gray-900">
+					Action recognition method
+				</label>
+				<fieldset className="mt-4">
+					<div className="space-y-4 sm:flex sm:items-center sm:space-y-4 flex-col">
+						{actionModels.map((method) => (
+							<div key={method.id} className="flex items-center w-full">
+								<input
+									id={method.id}
+									name="action"
+									type="radio"
+									checked={method.id === formValue.action}
+									className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
+									onChange={() =>
+										setFormValue((v) => ({ ...v, action: method.id }))
+									}
+								/>
+								<label
+									htmlFor={method.id}
+									className="ml-3 block text-sm font-medium text-gray-700"
+								>
+									{method.title}
+								</label>
+							</div>
+						))}
+					</div>
+				</fieldset>
 			</div>
 			<span className="text-red-600 mt-3 font-normal">{error}</span>
 			<button

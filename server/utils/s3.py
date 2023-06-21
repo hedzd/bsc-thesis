@@ -2,6 +2,8 @@ import os
 import boto3
 import time
 from math import floor
+import dotenv
+dotenv.load_dotenv()
 
 s3 = boto3.client(
     "s3",
