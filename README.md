@@ -13,6 +13,9 @@ The skeletal data was extracted using the [Light weight OpenPose](https://github
 Due to computational limitations, we selectively trained our models on a subset of the Kinetics 400 video dataset, focusing on 38 out of the available 400 classes. These classes represent a balanced mix of actions, providing a comprehensive overview of human activity. 
 Examples include "archery," "high jump," and "playing ukulele," among others. This targeted selection allows us to demonstrate the robustness of the ST-GCN and MST-GCN networks across a diverse range of actions.
 
+### Model training implementation
+Implementations of models, training process, and extracting pose are available in another repository [here](https://github.com/hedzd/Thesis-project).
+
 ## Results and Contributions
 
 This thesis demonstrates the power of graph convolutional networks in interpreting and analyzing human skeletal movements. 
